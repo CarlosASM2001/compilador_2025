@@ -166,9 +166,9 @@ pre_item   ::= GLOBAL ID:variable SEMI
 		| func_decl:f	{: if(debug) System.out.println("\t regla 14b"); RESULT=f; :}
 		;
 
-func_decl  ::= FUNCTION ID:fname LPAREN ID:param RPAREN BEGIN stmt_seq:cuerpo RETURN exp:ret END
+func_decl  ::= FUNCTION ID:fname LPAREN ID:param RPAREN BEGIN stmt_seq:cuerpo END
 				{: if(debug) System.out.println("\t regla 15");
-					RESULT = new NodoFuncion(fname, param, cuerpo, ret);
+					RESULT = new NodoFuncion(fname, param, cuerpo, null);
 				:}
 		;
 
@@ -209,17 +209,18 @@ stmt        ::= if_stmt:sif	{: if(debug) System.out.println("\t regla 3a");
 					:}
             | decl_stmt:decl	{: if(debug) System.out.println("\t regla 3h"); RESULT=decl; :}
             | return_stmt:ret	{: if(debug) System.out.println("\t regla 3i"); RESULT=ret; :}
+            | func_decl:f	{: if(debug) System.out.println("\t regla 3j"); RESULT=f; :}
             | error	{: if(debug) System.out.println("\t regla 3f"); 
 				System.out.println("Ocurrio error en cup # 0004");
 				RESULT=null;
 				:}
             ;
 
-decl_stmt  ::= VAR ID:variable SEMI
+decl_stmt  ::= VAR ID:variable
 				{: if(debug) System.out.println("\t regla 18a");
 					RESULT = new NodoDeclaracion(tipoVar.entero, variable, 1);
 				:}
-		| VAR ID:variable COLON ARRAY LBRACKET NUM:size RBRACKET SEMI
+		| VAR ID:variable COLON ARRAY LBRACKET NUM:size RBRACKET
 				{: if(debug) System.out.println("\t regla 18b");
 					RESULT = new NodoDeclaracion(tipoVar.entero, variable, Integer.parseInt(size));
 				:}
