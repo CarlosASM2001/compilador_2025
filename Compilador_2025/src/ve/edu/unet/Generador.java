@@ -1,6 +1,7 @@
 package ve.edu.unet;
 
 import ve.edu.unet.nodosAST.*;
+import java.util.*;
 
 public class Generador {
 	/* Ilustracion de la disposicion de la memoria en
@@ -35,6 +36,10 @@ public class Generador {
 	private static int desplazamientoTmp = 0;
 	private static TablaSimbolos tablaSimbolos = null;
 	private static String outputFilename = "../ejemplo_generado/salida.tm";
+
+	// funciones y retornos inline
+	private static final Map<String, NodoFuncion> nombreFuncionANodo = new HashMap<>();
+	private static final Deque<List<Integer>> pilaSlotsReturn = new ArrayDeque<>();
 	
 	public static void setTablaSimbolos(TablaSimbolos tabla){
 		tablaSimbolos = tabla;
@@ -84,8 +89,16 @@ public class Generador {
 			generarIdentificador(nodo);
 		}else if (nodo instanceof NodoOperacion){
 			generarOperacion(nodo);
+		}else if (nodo instanceof NodoFuncion){
+			// registrar funciones para llamadas inline
+			NodoFuncion f = (NodoFuncion) nodo;
+			nombreFuncionANodo.put(f.getNombre(), f);
+		}else if (nodo instanceof NodoLlamada){
+			generarLlamada((NodoLlamada) nodo);
+		}else if (nodo instanceof NodoReturn){
+			generarReturn((NodoReturn) nodo);
 		}else{
-			// Nodos no generables por ahora: funciones, declaraciones, return, llamadas
+			// Nodos no generables
 		}
 		/*Si el hijo de extrema izquierda tiene hermano a la derecha lo genero tambien*/
 		if(nodo.TieneHermano())
@@ -94,6 +107,46 @@ public class Generador {
 		System.out.println("ERROR: por favor fije la tabla de simbolos a usar antes de generar codigo objeto!!!");
 }
 
+	private static void generarLlamada(NodoLlamada llamada){
+		NodoFuncion fun = nombreFuncionANodo.get(llamada.getNombre());
+		if (fun == null) {
+			// llamada a función desconocida, dejar AC en 0
+			UtGen.emitirRM("LDC", UtGen.AC, 0, 0, "call: funcion no encontrada");
+			return;
+		}
+		// pasar argumento (si hay)
+		if (llamada.getArgumento() != null && fun.getParametro() != null) {
+			generar(llamada.getArgumento()); // deja valor en AC
+			int dirParam = tablaSimbolos.getDireccion(fun.getParametro());
+			UtGen.emitirRM("ST", UtGen.AC, dirParam, UtGen.GP, "call: pasar parametro");
+		}
+		// preparar pila de return slots
+		pilaSlotsReturn.push(new ArrayList<Integer>());
+		// generar cuerpo inline
+		generar(fun.getCuerpo());
+		// backpatch de returns a la salida
+		int salida = UtGen.emitirSalto(0);
+		List<Integer> slots = pilaSlotsReturn.pop();
+		for (int slot : slots) {
+			UtGen.cargarRespaldo(slot);
+			UtGen.emitirRM_Abs("LDA", UtGen.PC, salida, "return: salto a salida inline");
+			UtGen.restaurarRespaldo();
+		}
+		// si la funcion no retorno, AC queda con lo ultimo; no garantizado pero suficiente para ejemplos
+	}
+
+	private static void generarReturn(NodoReturn ret){
+		// evaluar expresion de retorno en AC
+		if (ret.getExpresion() != null) {
+			generar(ret.getExpresion());
+		}
+		// reservar salto a rellenar hacia salida de la llamada
+		if (!pilaSlotsReturn.isEmpty()) {
+			int slot = UtGen.emitirSalto(1);
+			pilaSlotsReturn.peek().add(slot);
+		}
+	}
+	
 	private static void generarIf(NodoBase nodo){
     	NodoIf n = (NodoIf)nodo;
 		int localidadSaltoElse,localidadSaltoEnd,localidadActual;

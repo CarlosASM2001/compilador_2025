@@ -61,7 +61,14 @@ public class TablaSimbolos {
 	    	cargarTabla(((NodoOperacion)raiz).getOpDerecho());
 	    }
 	    else if (raiz instanceof NodoDeclaracion){
-	    	InsertarSimbolo(((NodoDeclaracion)raiz).getIdentificador(), -1);
+	    	NodoDeclaracion nd = (NodoDeclaracion) raiz;
+	    	InsertarSimbolo(nd.getIdentificador(), -1);
+	    	// Reservar espacio contiguo para vectores
+	    	int len = nd.getLongitud();
+	    	if (len > 1) {
+	    		// ya se reservó 1 al insertar; reservar los restantes
+	    		direccion += (len - 1);
+	    	}
 	    }
 	    else if (raiz instanceof NodoFuncion){
 	    	NodoFuncion f = (NodoFuncion) raiz;
