@@ -60,6 +60,16 @@ public class TablaSimbolos {
 	    	cargarTabla(((NodoOperacion)raiz).getOpIzquierdo());
 	    	cargarTabla(((NodoOperacion)raiz).getOpDerecho());
 	    }
+	    else if (raiz instanceof NodoDeclaracion){
+	    	InsertarSimbolo(((NodoDeclaracion)raiz).getIdentificador(), -1);
+	    }
+	    else if (raiz instanceof NodoFuncion){
+	    	NodoFuncion f = (NodoFuncion) raiz;
+	    	InsertarSimbolo(f.getNombre(), -1);
+	    	if (f.getParametro() != null) InsertarSimbolo(f.getParametro(), -1);
+	    	cargarTabla(f.getCuerpo());
+	    	if (f.getRetorno() != null) cargarTabla(f.getRetorno());
+	    }
 	    raiz = raiz.getHermanoDerecha();
 	  }
 	}
@@ -96,5 +106,6 @@ public class TablaSimbolos {
 	/*
 	 * TODO:
 	 * 1. Crear lista con las lineas de codigo donde la variable es usada.
+	 * 2. Manejo real de alcances (pila de tablas o mapas anidados) para variables locales de función.
 	 * */
 }

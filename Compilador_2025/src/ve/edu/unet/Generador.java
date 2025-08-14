@@ -34,9 +34,14 @@ public class Generador {
 	 */
 	private static int desplazamientoTmp = 0;
 	private static TablaSimbolos tablaSimbolos = null;
+	private static String outputFilename = "../ejemplo_generado/salida.tm";
 	
 	public static void setTablaSimbolos(TablaSimbolos tabla){
 		tablaSimbolos = tabla;
+	}
+
+	public static void setOutputFilename(String filename){
+		outputFilename = filename;
 	}
 	
 	public static void generarCodigoObjeto(NodoBase raiz){
@@ -45,11 +50,13 @@ public class Generador {
 		System.out.println("------ CODIGO OBJETO DEL LENGUAJE TINY GENERADO PARA LA TM ------");
 		System.out.println();
 		System.out.println();
+		UtGen.setOutputFile(outputFilename);
 		generarPreludioEstandar();
 		generar(raiz);
 		/*Genero el codigo de finalizacion de ejecucion del codigo*/   
 		UtGen.emitirComentario("Fin de la ejecucion.");
 		UtGen.emitirRO("HALT", 0, 0, 0, "");
+		UtGen.closeOutput();
 		System.out.println();
 		System.out.println();
 		System.out.println("------ FIN DEL CODIGO OBJETO DEL LENGUAJE TINY GENERADO PARA LA TM ------");
@@ -78,7 +85,7 @@ public class Generador {
 		}else if (nodo instanceof NodoOperacion){
 			generarOperacion(nodo);
 		}else{
-			System.out.println("BUG: Tipo de nodo a generar desconocido");
+			// Nodos no generables por ahora: funciones, declaraciones, return, llamadas
 		}
 		/*Si el hijo de extrema izquierda tiene hermano a la derecha lo genero tambien*/
 		if(nodo.TieneHermano())
@@ -294,7 +301,7 @@ public class Generador {
 	//TODO: enviar preludio a archivo de salida, obtener antes su nombre
 	private static void generarPreludioEstandar(){
 		UtGen.emitirComentario("Compilacion TINY para el codigo objeto TM");
-		UtGen.emitirComentario("Archivo: "+ "NOMBRE_ARREGLAR");
+		UtGen.emitirComentario("Archivo: "+ outputFilename);
 		/*Genero inicializaciones del preludio estandar*/
 		/*Todos los registros en tiny comienzan en cero*/
 		UtGen.emitirComentario("Preludio estandar:");
