@@ -292,6 +292,55 @@ public class Generador {
 						UtGen.emitirRM("LDA", UtGen.PC, 1, UtGen.PC, "Salto incodicional a direccion: PC+1 (es falso evito colocarlo verdadero)");
 						UtGen.emitirRM("LDC", UtGen.AC, 1, UtGen.AC, "caso de verdadero (AC=1)");
 						break;
+			case	and:	UtGen.emitirRO("MUL", UtGen.AC, UtGen.AC1, UtGen.AC, "op: and");
+						break;
+			case	or:	UtGen.emitirRO("ADD", UtGen.AC, UtGen.AC1, UtGen.AC, "op: or (sum)");
+						// normalizar a 0/1
+						UtGen.emitirRM("JGT", UtGen.AC, 2, UtGen.PC, "or: >0 ?");
+						UtGen.emitirRM("LDC", UtGen.AC, 0, UtGen.AC, "or: false");
+						UtGen.emitirRM("LDA", UtGen.PC, 1, UtGen.PC, "skip");
+						UtGen.emitirRM("LDC", UtGen.AC, 1, UtGen.AC, "or: true");
+						break;
+			case	not:	// if AC1 != 0 then false(0) else true(1)
+						UtGen.emitirRM("JNE", UtGen.AC1, 2, UtGen.PC, "op not");
+						UtGen.emitirRM("LDC", UtGen.AC, 1, UtGen.AC, "not: true");
+						UtGen.emitirRM("LDA", UtGen.PC, 1, UtGen.PC, "skip");
+						UtGen.emitirRM("LDC", UtGen.AC, 0, UtGen.AC, "not: false");
+						break;
+			case	potencia:
+						// base en AC1, exponente en AC (enteros >= 0)
+						int baseOff = desplazamientoTmp; // se usa y luego se decrementa
+						UtGen.emitirRM("ST", UtGen.AC1, desplazamientoTmp--, UtGen.MP, "pow: push base");
+						int expOff = desplazamientoTmp;  // se usa y luego se decrementa
+						UtGen.emitirRM("ST", UtGen.AC, desplazamientoTmp--, UtGen.MP, "pow: push exponent");
+						int resOff = desplazamientoTmp;  // se usa y luego se decrementa
+						UtGen.emitirRM("LDC", UtGen.AC, 1, 0, "pow: init result=1");
+						UtGen.emitirRM("ST", UtGen.AC, desplazamientoTmp--, UtGen.MP, "pow: push result");
+						int loopStart = UtGen.emitirSalto(0);
+						// if exp <= 0 goto exit
+						UtGen.emitirRM("LD", UtGen.AC, expOff, UtGen.MP, "pow: load exponent");
+						int jleLoc = UtGen.emitirSalto(1);
+						UtGen.emitirComentario("pow: salto a exit aqui");
+						// result = result * base
+						UtGen.emitirRM("LD", UtGen.AC, resOff, UtGen.MP, "pow: load result");
+						UtGen.emitirRM("LD", UtGen.AC1, baseOff, UtGen.MP, "pow: load base");
+						UtGen.emitirRO("MUL", UtGen.AC, UtGen.AC1, UtGen.AC, "pow: result *= base");
+						UtGen.emitirRM("ST", UtGen.AC, resOff, UtGen.MP, "pow: store result");
+						// exp = exp - 1
+						UtGen.emitirRM("LD", UtGen.AC1, expOff, UtGen.MP, "pow: load exponent");
+						UtGen.emitirRM("LDC", UtGen.AC, 1, 0, "pow: const 1");
+						UtGen.emitirRO("SUB", UtGen.AC, UtGen.AC1, UtGen.AC, "pow: exp - 1");
+						UtGen.emitirRM("ST", UtGen.AC, expOff, UtGen.MP, "pow: store exponent");
+						// back to loop
+						UtGen.emitirRM_Abs("LDA", UtGen.PC, loopStart, "pow: loop back");
+						int exitLoc = UtGen.emitirSalto(0);
+						UtGen.cargarRespaldo(jleLoc);
+						UtGen.emitirRM_Abs("JLE", UtGen.AC, exitLoc, "pow: exit if exp<=0");
+						UtGen.restaurarRespaldo();
+						// load final result y liberar temporales
+						UtGen.emitirRM("LD", UtGen.AC, resOff, UtGen.MP, "pow: load final result");
+						desplazamientoTmp += 3;
+						break;
 			default:
 						UtGen.emitirComentario("BUG: tipo de operacion desconocida");
 		}
