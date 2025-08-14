@@ -1,0 +1,36 @@
+{Ejemplo simple de operadores}
+
+begin
+    var x;
+    var y;
+    var a;
+    var b;
+      
+    read x;
+    read y;
+    
+    // Operadores relacionales
+    write x > y;
+    write x >= y;
+    write x <= y;
+    write x != y;
+    write x = y;
+    
+    // Operadores matemáticos
+    write x + y;
+    write x - y;
+    write x * y;
+    if y != 0 then
+        write x / y
+    end;
+    write x % y;
+    write x ** 2;
+    
+    // Operadores lógicos
+    a := x <= y;
+    b := x >= y;
+    write a && b;
+    write a || b;
+    write !a;
+        
+end

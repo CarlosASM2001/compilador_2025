@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="jflex-full-1.8.2">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/src/especificacion/java-cup-11b-runtime.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

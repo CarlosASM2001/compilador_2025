@@ -1,0 +1,11 @@
+int x;
+int y;
+int res;
+int result;
+repeat
+    read x;
+    read y;
+    result := x mod y;
+    write result;
+    read res;
+until res = 0;

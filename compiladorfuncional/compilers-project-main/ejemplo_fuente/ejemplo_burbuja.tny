@@ -1,0 +1,21 @@
+int i;
+int vec[8];
+int j;
+int auxi;
+int auxj;
+for i:=0, i<8, i:=i+1 loop
+    read vec[i];
+end
+ for i:=0, i<8, i:=i+1 loop
+    for j:=0, j<i, j:=j+1 loop
+        auxi := vec[i];
+        auxj := vec[j];
+        if auxj < auxi then
+            vec[i] := auxj;
+            vec[j] := auxi;
+        end
+    end
+end
+for i:=0, i<8, i:=i+1 loop
+    write vec[i];
+end

@@ -1,0 +1,20 @@
+int menor;
+int val[5];
+int suma;
+int i;
+i := 0;
+repeat
+    read val[i];
+    i := i+1;
+until i = 5;
+suma := val[0] + val[1] + val[2] + val[3] + val[4];
+menor := val[0];
+i := 1;
+repeat
+    if val[i] < menor then
+       menor := val[i];
+    end
+    i := i+1;
+until i = 5;
+write suma;
+write menor;

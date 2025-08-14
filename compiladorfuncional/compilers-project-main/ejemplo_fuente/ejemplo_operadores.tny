@@ -1,0 +1,19 @@
+bool a;
+bool b;
+int res;
+int x;
+int y;
+repeat
+    read x;
+    read y;
+    write x > y;
+    write x >= y;
+    write x <= y;
+    write x <> y;
+    a := x <= y;
+    b := x >= y;
+    write a and b;
+    write a or b;
+    write not a;
+    read res;
+until res = 0;

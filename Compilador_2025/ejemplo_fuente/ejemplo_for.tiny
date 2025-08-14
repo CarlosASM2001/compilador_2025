@@ -1,0 +1,5 @@
+begin
+    for i := 1 to 9 step 1
+        write i
+    end
+end
