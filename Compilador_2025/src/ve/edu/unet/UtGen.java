@@ -10,7 +10,7 @@ package ve.edu.unet;
 public class UtGen {
 	private static int instruccionActual=0;	//Direccion (num linea) actual de emision de la instruccion
 	private static int instruccionMasAlta=0;	//Almacena la direccion de la instruccion que ha resultado ser la mayor hasta ahora 
-	public static boolean debug=true;
+	public static boolean debug=false;
 
 	/* PC = program counter, registro[7] donde se almacena la direccion (linea)
 	 *  actual de ejecucion del codigo objeto 
@@ -32,7 +32,8 @@ public class UtGen {
 
 	/* Defino al registro[1] como el acumulador 2 */
 	public static int  AC1=1;
-	
+
+	public static int DESP=2;
 	
 	public static void emitirComentario(String c){
 		if(debug) System.out.println("*      "+c);
@@ -59,7 +60,7 @@ public class UtGen {
 	
 	/* Este procedimiento emite sentencias RM (Registro a memoria)
 	 * de la TM		opcode r,d(s)  		a=d+reg[s]
-	 * 				reg[PC_REG]=a  o	reg[r] = x (dependiendo de instruccion de carga)
+	 * 			reg[PC_REG]=a  o	reg[r] = x (dependiendo de instruccion de carga)
 	 * 
 	 * op = codigo de la operacion
 	 * r = registro destino

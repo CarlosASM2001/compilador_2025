@@ -1,0 +1,15 @@
+/Compilador_2025/src/especificacion
+java -jar jflex-full-1.8.2.jar lexico.flex
+java -jar java-cup-11b.jar -parser parser -symbols sym sintactico.cup
+
+
+
+
+
+Compilar y probar
+/Compilador_2025/src
+javac -cp ".;especificacion\java-cup-11b-runtime.jar" ve\edu\unet\*.java ve\edu\unet\nodosAST\*.java
+
+java -cp ".;especificacion\java-cup-11b-runtime.jar" ve.edu.unet.parser ../ejemplo_fuente/ejemplo_for.tiny
+java -cp ".;especificacion\java-cup-11b-runtime.jar" ve.edu.unet.parser ../ejemplo_fuente/ejemplo_vectores.tiny
+java -cp ".;especificacion\java-cup-11b-runtime.jar" ve.edu.unet.parser ../ejemplo_fuente/ejemplo_operadores.tiny
