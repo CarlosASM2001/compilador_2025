@@ -13,4 +13,5 @@ javac -cp ".;especificacion\java-cup-11b-runtime.jar" ve\edu\unet\*.java ve\edu\
 java -cp ".;especificacion\java-cup-11b-runtime.jar" ve.edu.unet.parser ../ejemplo_fuente/ejemplo_for.tiny
 java -cp ".;especificacion\java-cup-11b-runtime.jar" ve.edu.unet.parser ../ejemplo_fuente/ejemplo_vectores.tiny
 java -cp ".;especificacion\java-cup-11b-runtime.jar" ve.edu.unet.parser ../ejemplo_fuente/ejemplo_operadores.tiny
+java -cp ".;especificacion\java-cup-11b-runtime.jar" ve.edu.unet.parser ../ejemplo_fuente/test_vectores_operadores.tiny
 java -cp ".;especificacion\java-cup-11b-runtime.jar" ve.edu.unet.parser ../ejemplo_fuente/ejemplo_funcion.tiny

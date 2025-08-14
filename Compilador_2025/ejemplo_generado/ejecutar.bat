@@ -1,3 +1,3 @@
 @echo off
-tiny64.exe ejemplo_funcion.tm
+tiny64.exe test_vectores_operadores.tm
 pause
