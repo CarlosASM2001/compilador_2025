@@ -1,16 +1,19 @@
 package ve.edu.unet;
 
+import ve.edu.unet.nodosAST.tipoVar;
+
 public class RegistroSimbolo {
 	private String identificador;
-	private int NumLinea;
-	private int DireccionMemoria;
+	private int numLinea;
+	private int direccionMemoria;
+	private tipoVar tipoVariable;
 	
-	public RegistroSimbolo(String identificador, int numLinea,
-			int direccionMemoria) {
+	public RegistroSimbolo(String identificador, int numLinea, int direccionMemoria) {
 		super();
 		this.identificador = identificador;
-		NumLinea = numLinea;
-		DireccionMemoria = direccionMemoria;
+		this.numLinea = numLinea;
+		this.direccionMemoria = direccionMemoria;
+		this.tipoVariable = tipoVar.entero; // por defecto entero
 	}
 
 	public String getIdentificador() {
@@ -18,14 +21,14 @@ public class RegistroSimbolo {
 	}
 
 	public int getNumLinea() {
-		return NumLinea;
+		return numLinea;
 	}
 
 	public int getDireccionMemoria() {
-		return DireccionMemoria;
+		return direccionMemoria;
 	}
 
-	public void setDireccionMemoria(int direccionMemoria) {
-		DireccionMemoria = direccionMemoria;
+	public tipoVar getTipoVariable() {
+		return tipoVariable;
 	}
 }
