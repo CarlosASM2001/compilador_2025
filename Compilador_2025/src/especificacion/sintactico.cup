@@ -30,6 +30,8 @@ Mas informacion en: http//4thmouse.com/index.php/2007/02/15/using-custom-symbols
 		ts.cargarTabla(root);
 		ts.ImprimirClaves();
 		Generador.setTablaSimbolos(ts);
+		String outName = "../ejemplo_generado/" + (args.length>0 ? new java.io.File(args[0]).getName().replaceAll("\\.[^.]*$", "") : "salida") + ".tm";
+		Generador.setOutputFilename(outName);
 		Generador.generarCodigoObjeto(root);
 	}
 
